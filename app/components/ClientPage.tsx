@@ -25,7 +25,7 @@ export default function ClientPage() {
       <main className="container mx-auto px-4 py-12">
         {/* Header Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold dental-blue-text mb-3">Claire AI Receptionist</h1>
+          <h1 className="text-4xl font-bold dental-blue-text mb-3">Claire - AI Receptionist</h1>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
             Experience our dental AI receptionist with different voice models to find the perfect match for your practice
           </p>
