@@ -35,9 +35,9 @@ export default function ClientPage() {
         <div className="max-w-3xl mx-auto mb-10 bg-white p-5 rounded-lg shadow-sm border border-gray-100">
           <h2 className="text-xl font-semibold mb-3 dental-blue-text">How to Use This Demo</h2>
           <ol className="text-gray-600 space-y-2 ml-5 list-decimal">
-            <li>Click "Call Claire" to start a conversation with our AI receptionist</li>
+            <li>Click &quot;Call Claire&quot; to start a conversation with our AI receptionist</li>
             <li>Speak naturally as if you were calling to schedule a dental appointment</li>
-            <li>Try phrases like "I need to book a cleaning" or "Do you have availability next week?"</li>
+            <li>Try phrases like &quot;I need to book a cleaning&quot; or &quot;Do you have availability next week?&quot;</li>
             <li>Test how Claire handles questions about services, insurance, or office hours</li>
             <li>Compare the voice quality and natural responses between the two models</li>
           </ol>

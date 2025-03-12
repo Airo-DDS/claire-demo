@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Vapi from '@vapi-ai/web';
-import { PhoneCall, PhoneOff, Volume2, VolumeX, Mic, MicOff, MessageSquare } from 'lucide-react';
+import { PhoneCall, PhoneOff, Volume2, Mic, MicOff, MessageSquare } from 'lucide-react';
 
 interface VapiAssistantProps {
   assistantId: string;
@@ -74,7 +74,7 @@ export default function VapiAssistant({ assistantId, assistantName, accentColor 
         }
       };
     }
-  }, []);
+  }, [isCalling]); // Added isCalling as a dependency
 
   const startCall = async () => {
     if (vapiRef.current && !isCalling && !isConnecting) {
