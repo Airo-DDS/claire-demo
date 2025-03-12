@@ -3,13 +3,12 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --dental-blue: #1E88E5;
+  --dental-blue-light: #64B5F6;
+  --dental-blue-dark: #0D47A1;
+  --dental-blue-opacity: rgba(30, 136, 229, 0.1);
+  --subtle-gray: #F5F7FA;
+  --font-sans: var(--font-questrial);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +21,60 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.dental-blue-bg {
+  background-color: var(--dental-blue);
+}
+
+.dental-blue-text {
+  color: var(--dental-blue);
+}
+
+.dental-blue-border {
+  border-color: var(--dental-blue);
+}
+
+.dental-blue-hover:hover {
+  background-color: var(--dental-blue-opacity);
+}
+
+.dental-blue-dark-bg {
+  background-color: var(--dental-blue-dark);
+}
+
+.subtle-gray-bg {
+  background-color: var(--subtle-gray);
+}
+
+/* Custom Animation */
+@keyframes pulse-blue {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.animate-pulse-blue {
+  animation: pulse-blue 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Smooth Transitions */
+.transition-all {
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom Card Styles */
+.card-shadow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
