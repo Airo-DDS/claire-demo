@@ -28,46 +28,7 @@ export default function VapiAssistant({ assistantId, assistantName, accentColor 
       vapiRef.current = vapi;
 
       // Set up event listeners
-      vapi.on('call-start', () => {
-        console.log('Call started');
-        setIsCalling(true);
-        setIsConnecting(false);
-        setCallStatus('Connected');
-      });
-
-      vapi.on('call-end', () => {
-        console.log('Call ended');
-        setIsCalling(false);
-        setIsConnecting(false);
-        setVolumeLevel(0);
-        setCallStatus('');
-      });
-
-      vapi.on('volume-level', (volume: number) => {
-        setVolumeLevel(volume);
-      });
-
-      vapi.on('speech-start', () => {
-        setCallStatus('Speaking');
-      });
-
-      vapi.on('speech-end', () => {
-        setCallStatus('Listening');
-      });
-
-      vapi.on('message', (message: any) => {
-        console.log('Message received:', message);
-        if (message.type === 'transcript' && message.transcript?.text) {
-          setLastMessage(message.transcript.text);
-        }
-      });
-
-      vapi.on('error', (error: any) => {
-        console.error('VAPI error:', error);
-        setIsCalling(false);
-        setIsConnecting(false);
-        setCallStatus('Error: ' + error.message);
-      });
+      setupEventListeners(vapi);
 
       return () => {
         // Cleanup on unmount
@@ -81,7 +42,7 @@ export default function VapiAssistant({ assistantId, assistantName, accentColor 
         }
       };
     }
-  }, [isCalling]); // Added isCalling as a dependency
+  }, []); // Remove isCalling dependency to prevent re-initialization during calls
 
   const startCall = async () => {
     if (vapiRef.current && !isCalling && !isConnecting) {
@@ -98,9 +59,15 @@ export default function VapiAssistant({ assistantId, assistantName, accentColor 
   };
 
   const stopCall = () => {
-    if (vapiRef.current && isCalling) {
+    if (vapiRef.current && (isCalling || isConnecting)) {
       setCallStatus('Ending call...');
+      
       try {
+        // Force UI to update immediately to prevent further interaction
+        setIsCalling(false);
+        setIsConnecting(false);
+        
+        // Then stop the call
         vapiRef.current.stop();
         
         // Clear any existing timeout
@@ -108,16 +75,19 @@ export default function VapiAssistant({ assistantId, assistantName, accentColor 
           clearTimeout(safetyTimeoutRef.current);
         }
         
-        // Set a safety timeout in case the call-end event is not triggered
-        safetyTimeoutRef.current = setTimeout(() => {
-          if (isCalling) {
-            console.log('Call end event not received, forcing UI update');
-            setIsCalling(false);
-            setIsConnecting(false);
-            setVolumeLevel(0);
-            setCallStatus('');
-          }
-        }, 5000); // 5 seconds timeout
+        // Reset all states to ensure clean termination
+        setVolumeLevel(0);
+        setLastMessage('');
+        setCallStatus('');
+        
+        // Add a forced cleanup of the Vapi instance
+        if (typeof window !== 'undefined') {
+          const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY || '');
+          vapiRef.current = vapi;
+          
+          // Re-initialize event listeners
+          setupEventListeners(vapi);
+        }
       } catch (error) {
         console.error('Error stopping call:', error);
         // Force UI to reset if there's an error
@@ -135,6 +105,50 @@ export default function VapiAssistant({ assistantId, assistantName, accentColor 
       vapiRef.current.setMuted(newMuteState);
       setIsMuted(newMuteState);
     }
+  };
+
+  // Extract event listener setup to a separate function
+  const setupEventListeners = (vapi: any) => {
+    vapi.on('call-start', () => {
+      console.log('Call started');
+      setIsCalling(true);
+      setIsConnecting(false);
+      setCallStatus('Connected');
+    });
+
+    vapi.on('call-end', () => {
+      console.log('Call ended');
+      setIsCalling(false);
+      setIsConnecting(false);
+      setVolumeLevel(0);
+      setCallStatus('');
+    });
+
+    vapi.on('volume-level', (volume: number) => {
+      setVolumeLevel(volume);
+    });
+
+    vapi.on('speech-start', () => {
+      setCallStatus('Speaking');
+    });
+
+    vapi.on('speech-end', () => {
+      setCallStatus('Listening');
+    });
+
+    vapi.on('message', (message: any) => {
+      console.log('Message received:', message);
+      if (message.type === 'transcript' && message.transcript?.text) {
+        setLastMessage(message.transcript.text);
+      }
+    });
+
+    vapi.on('error', (error: any) => {
+      console.error('VAPI error:', error);
+      setIsCalling(false);
+      setIsConnecting(false);
+      setCallStatus('Error: ' + error.message);
+    });
   };
 
   return (
