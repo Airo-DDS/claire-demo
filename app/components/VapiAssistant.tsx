@@ -18,6 +18,7 @@ export default function VapiAssistant({ assistantId, assistantName, accentColor 
   const [isConnecting, setIsConnecting] = useState(false);
   const vapiRef = useRef<any>(null);
   const [lastMessage, setLastMessage] = useState('');
+  const safetyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Initialize VAPI only on client side
@@ -72,6 +73,11 @@ export default function VapiAssistant({ assistantId, assistantName, accentColor 
         if (vapi && isCalling) {
           vapi.stop();
         }
+        
+        // Clear any pending safety timeout
+        if (safetyTimeoutRef.current) {
+          clearTimeout(safetyTimeoutRef.current);
+        }
       };
     }
   }, [isCalling]); // Added isCalling as a dependency
@@ -93,7 +99,32 @@ export default function VapiAssistant({ assistantId, assistantName, accentColor 
   const stopCall = () => {
     if (vapiRef.current && isCalling) {
       setCallStatus('Ending call...');
-      vapiRef.current.stop();
+      try {
+        vapiRef.current.stop();
+        
+        // Clear any existing timeout
+        if (safetyTimeoutRef.current) {
+          clearTimeout(safetyTimeoutRef.current);
+        }
+        
+        // Set a safety timeout in case the call-end event is not triggered
+        safetyTimeoutRef.current = setTimeout(() => {
+          if (isCalling) {
+            console.log('Call end event not received, forcing UI update');
+            setIsCalling(false);
+            setIsConnecting(false);
+            setVolumeLevel(0);
+            setCallStatus('');
+          }
+        }, 5000); // 5 seconds timeout
+      } catch (error) {
+        console.error('Error stopping call:', error);
+        // Force UI to reset if there's an error
+        setIsCalling(false);
+        setIsConnecting(false);
+        setVolumeLevel(0);
+        setCallStatus('Call ended with an error');
+      }
     }
   };
 
