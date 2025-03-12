@@ -1,6 +1,7 @@
 'use client';
 
 import CallData from '../components/CallData';
+import Link from 'next/link';
 
 export default function CallsPage() {
   // Assistant IDs for both voice models
@@ -18,7 +19,7 @@ export default function CallsPage() {
             <span className="text-xl font-bold dental-blue-text">AiroDental</span>
           </div>
           <div>
-            <a href="/" className="text-sm text-gray-500 hover:text-gray-700">Back to Demo</a>
+            <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">Back to Demo</Link>
           </div>
         </div>
       </nav>

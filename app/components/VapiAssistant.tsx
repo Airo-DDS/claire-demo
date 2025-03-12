@@ -80,8 +80,9 @@ export default function VapiAssistant({ assistantId, assistantName, accentColor 
         }
         
         // Clear any pending safety timeout
-        if (safetyTimeoutRef.current) {
-          clearTimeout(safetyTimeoutRef.current);
+        const timeoutId = safetyTimeoutRef.current;
+        if (timeoutId) {
+          clearTimeout(timeoutId);
         }
       };
     }

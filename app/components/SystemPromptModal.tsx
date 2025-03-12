@@ -83,7 +83,7 @@ You are "Claire," an AI voice receptionist for Airodental, a reputable dental pr
     const formattedSections = [];
     
     // Skip the empty first element if split resulted in an empty string
-    let startIdx = sections[0].trim() === "" ? 1 : 0;
+    const startIdx = sections[0].trim() === "" ? 1 : 0;
     
     for (let i = startIdx; i < sections.length; i += 2) {
       const title = i + 1 < sections.length ? sections[i] : "";
