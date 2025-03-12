@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import Vapi from '@vapi-ai/web';
 import { PhoneCall, PhoneOff, Volume2, Mic, MicOff, MessageSquare } from 'lucide-react';
+import SystemPromptModal from './SystemPromptModal';
 
 interface VapiAssistantProps {
   assistantId: string;
@@ -139,10 +140,13 @@ export default function VapiAssistant({ assistantId, assistantName, accentColor 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden">
       <div 
-        className="py-4 px-6 text-white" 
+        className="py-4 px-6 text-white flex justify-between items-center" 
         style={{ backgroundColor: accentColor }}
       >
         <h2 className="text-xl font-semibold">{assistantName}</h2>
+        <div>
+          <SystemPromptModal buttonVariant="secondary" buttonText="System Prompt" />
+        </div>
       </div>
       
       <div className="p-6">
